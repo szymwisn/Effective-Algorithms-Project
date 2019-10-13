@@ -17,6 +17,7 @@ Matrix::Matrix(vector<vector<Details>> &instance) {
 
 void Matrix::setInstance(vector<vector<Details>> &instance) {
     this->instance = instance;
+    this->numberOfCities = (int) this->instance.size();
 }
 
 vector<vector<Details>> Matrix::getInstance() {

@@ -8,6 +8,8 @@ int main() {
     char option;
     string fileName;
     int numberOfCities;
+    int distance;
+    vector<vector<Details>> instance;
     Matrix matrix;
 
     cout << "--=== Traveling Salesman Problem ===--" << endl;
@@ -15,7 +17,8 @@ int main() {
     do {
         cout << "1 - Load Matrix From File" << endl;
         cout << "2 - Generate Random Matrix" << endl;
-        cout << "3 - Calculate Cost Function" << endl;
+        cout << "3 - Create Matrix Manually" << endl;
+        cout << "4 - Calculate Cost Function" << endl;
         cout << "q - Exit" << endl;
         cout << "Enter Key >> ";
         cin >> option;
@@ -35,6 +38,31 @@ int main() {
                 matrix.display();
                 break;
             case '3':
+                cout << "Enter number of cities >>";
+                cin >> numberOfCities;
+
+                instance.resize((unsigned long long int) numberOfCities);
+                for(int i = 0; i < numberOfCities; i++) {
+                    instance[i].resize((unsigned long long int) numberOfCities);
+                }
+
+                for(int i = 0; i < numberOfCities; i++) {
+                    for(int j = 0; j < numberOfCities; j++ ) {
+                        if(i == j) {
+                            instance[i][j].distance = - 1;
+                        } else {
+                            cout << "Distance between city[" << i << "] and city[" << j << "]: " << endl;
+                            cin >> distance;
+                            instance[i][j].distance = distance;
+                        }
+                    }
+                }
+
+                matrix.clear();
+                matrix.setInstance(instance);
+                matrix.display();
+                break;
+            case '4':
                 cout << "Cost Function Value: " << matrix.calculateCostValue() << endl;
                 break;
             case 'q':
