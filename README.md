@@ -4,7 +4,8 @@ Implementations of Traveling Salesman Problem including Brute Force, Dynamic Pro
 
 #### Step01
 
-* data structure - adjacency matrix
-* randomizing problem instance and interface to provide the instance by hand
-* reading prepared data sets from file 
-* algorithm to calculate full route from a specific city to itself containing all other cities only once
+* data structure - matrix with cities details
+* reading a prepared data set from a specific file 
+* generating a random problem instance
+* providing the problem instance manually
+* calculation of cost function (route length from a city to itself)
