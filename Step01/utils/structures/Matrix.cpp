@@ -83,6 +83,18 @@ int Matrix::calculateCostValue() {
     return cost;
 }
 
+int Matrix::calculateCostValue(vector<int> cities) {
+    int cost = 0;
+
+    for(int i = 0; i < cities.size() - 1; i++) {
+        cost += this->instance[cities[i]][cities[i+1]].distance;
+    }
+
+    cost += this->instance[cities[cities.size() - 1]][cities[0]].distance;
+
+    return cost;
+}
+
 void Matrix::clear() {
     this->numberOfCities = 0;
     this->instance.clear();

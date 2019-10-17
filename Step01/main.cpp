@@ -9,6 +9,8 @@ int main() {
     string fileName;
     int numberOfCities;
     int distance;
+    int numberOfCity;
+    vector<int> cityList;
     vector<vector<Details>> instance;
     Matrix matrix;
 
@@ -18,7 +20,8 @@ int main() {
         cout << "1 - Load Matrix From File" << endl;
         cout << "2 - Generate Random Matrix" << endl;
         cout << "3 - Create Matrix Manually" << endl;
-        cout << "4 - Calculate Cost Function" << endl;
+        cout << "4 - Calculate Cost Function - in default order" << endl;
+        cout << "5 - Calculate Cost Function - in given order" << endl;
         cout << "q - Exit" << endl;
         cout << "Enter Key >> ";
         cin >> option;
@@ -64,6 +67,24 @@ int main() {
                 break;
             case '4':
                 cout << "Cost Function Value: " << matrix.calculateCostValue() << endl;
+                break;
+            case '5':
+                cityList.clear();
+
+                for(int i = 0; i < matrix.getNumberOfCities(); i++) {
+                    cout << "Enter city number " << i << " >> ";
+                    cin >> numberOfCity;
+                    cityList.push_back(numberOfCity);
+                }
+
+                cout << "Cost Function Value of cities in order ";
+                for(int i = 0; i < cityList.size(); i++) {
+                    cout << cityList[i] << " -> ";
+                }
+
+                cout << cityList[0] << " is: ";
+
+                cout << matrix.calculateCostValue(cityList) << endl;
                 break;
             case 'q':
                 cout << "--=== Application Closed ===--" << endl;
