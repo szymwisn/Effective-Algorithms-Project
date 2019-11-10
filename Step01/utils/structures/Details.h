@@ -4,11 +4,9 @@
 
 struct Details {
     int distance;
-    bool visited;
 
     explicit Details(int distance = -1, bool visited = false) {
         this->distance = distance;
-        this->visited = visited;
     }
 };
 
