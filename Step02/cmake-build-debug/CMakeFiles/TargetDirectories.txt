@@ -1,3 +1,0 @@
-/home/szymon/Git/Effective-Algorithms-Project/Step02/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/szymon/Git/Effective-Algorithms-Project/Step02/cmake-build-debug/CMakeFiles/Step01.dir
-/home/szymon/Git/Effective-Algorithms-Project/Step02/cmake-build-debug/CMakeFiles/edit_cache.dir

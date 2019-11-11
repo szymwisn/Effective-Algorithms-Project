@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/Step01.dir/main.cpp.o CMakeFiles/Step01.dir/utils/file_manager/FileManager.cpp.o CMakeFiles/Step01.dir/utils/structures/Matrix.cpp.o CMakeFiles/Step01.dir/algorithms/Dynamic_programming.cpp.o  -o Step01 
