@@ -1,8 +1,7 @@
 #include "BruteForce.h"
 
-BruteForce::BruteForce(int firstCity, Matrix matrix) {
+BruteForce::BruteForce(Matrix matrix) {
     this->matrix = matrix;
-    this->firstCity = firstCity;
     this->numberOfCities = (int) matrix.getInstance().size();
     this->cities = getAllCities();
     this->permutations = getPermutations();
@@ -12,8 +11,14 @@ vector<int> BruteForce::findPath() {
     int minDistance = INT_MAX;
     vector<int> bestPermutation;
 
+    // calculate distance for each path permutation
+    // and if possible choose new best permutation
     for(const vector<int> &permutation : this->permutations) {
+        // calculate the distance for a permutation
         int distance = this->matrix.calculateCostValue(permutation);
+
+        // if the new distance is shorter than the current shortest distance -
+        // make it the new shortest distance
         if(distance < minDistance) {
             bestPermutation = permutation;
             minDistance = distance;
@@ -38,6 +43,7 @@ vector<vector<int>> BruteForce::getPermutations() {
     vector<vector<int>> permutations;
     permutations.resize((unsigned long) factorial(this->numberOfCities));
 
+    // find all path permutations
     int k = 0;
     do {
         permutations[k] = this->cities;

@@ -4,7 +4,7 @@
 #include <iostream>
 
 void showMenu();
-void printPath(Matrix &matrix, const vector<int> &path);
+void printPathDetails(Matrix &matrix, const vector<int> &path);
 
 using namespace std;
 
@@ -70,18 +70,18 @@ int main() {
                 break;
             }
             case '4': {
-                BruteForce bf(0, matrix);
+                BruteForce bf(matrix);
                 vector<int> path = bf.findPath();
 
-                printPath(matrix, path);
+                printPathDetails(matrix, path);
 
                 break;
             }
             case '5': {
-                DynamicProgramming dp(0, matrix);
+                DynamicProgramming dp(matrix);
                 vector<int> path = dp.findPath();
 
-                printPath(matrix, path);
+                printPathDetails(matrix, path);
 
                 break;
             }
@@ -108,7 +108,7 @@ void showMenu() {
     cout << "Enter Key >> ";
 }
 
-void printPath(Matrix &matrix, const vector<int> &path) {
+void printPathDetails(Matrix &matrix, const vector<int> &path) {
     cout << "Cost Function Value of cities in order\n[";
     for(int city : path) {
         cout << city << " -> ";

@@ -25,7 +25,6 @@ public:
 
     void display();
     void generate(int numberOfCities);
-    int calculateCostValue();
     int calculateCostValue(vector<int>);
     void clear();
 };

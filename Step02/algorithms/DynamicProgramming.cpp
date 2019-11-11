@@ -1,46 +1,14 @@
 #include "DynamicProgramming.h"
 
-DynamicProgramming::DynamicProgramming(int firstCity, Matrix matrix) {
-    this->firstCity = firstCity;
+DynamicProgramming::DynamicProgramming(Matrix matrix) {
     this->instance = matrix.getInstance();
-    this->cities = (int) this->instance.size();
+    this->numberOfCities = (int) this->instance.size();
 
     // allocate memory for arrays
     allocateMemory();
 
     // fill arrays with -1 value
     fillArrays();
-
-}
-
-void DynamicProgramming::allocateMemory() {
-    // this->cities possible cities that could have been visited as the last ones and
-    // 2^this->cities (1 << this -> cities) possible subsets of visited cities
-    cache = new int*[this->cities];
-
-    for(int i = 0; i < this->cities; i++) {
-        cache[i] = new int[1 << this->cities];
-    }
-
-    lastCities = new int*[this->cities];
-
-    for(int i = 0; i < this->cities; i++) {
-        lastCities[i] = new int[1 << this->cities];
-    }
-}
-
-void DynamicProgramming::fillArrays() {
-    for(int i = 0; i < this->cities; i++) {
-        for(int j = 0; j < 1 << this->cities; j++) {
-            this->cache[i][j] = -1;
-        }
-    }
-
-    for(int i = 0; i < this->cities; i++) {
-        for(int j = 0; j < 1 << this->cities; j++) {
-            this->lastCities[i][j] = -1;
-        }
-    }
 }
 
 vector<int> DynamicProgramming::findPath() {
@@ -51,7 +19,7 @@ vector<int> DynamicProgramming::findPath() {
 
 void DynamicProgramming::execute() {
     // set city as firstCity
-    int city = this->firstCity;
+    int city = 0;
 
     // and calculate it's binary mask
     int mask = 1 << city;
@@ -61,20 +29,20 @@ void DynamicProgramming::execute() {
 }
 
 int DynamicProgramming::execute(int city, int mask) {
-    int const VISITED_ALL_MASK = (1 << this->cities) - 1;
+    int const VISITED_ALL_MASK = (1 << this->numberOfCities) - 1;
     int minDistance = INT_MAX;
     int lastCity = -1;
 
     // if each city has already been visited - go back to the first city
     if (mask == VISITED_ALL_MASK)
-        return this->instance[city][this->firstCity].distance;
+        return this->instance[city][0].distance;
 
     // if distance already in cache - return it's value
     if (this->cache[city][mask] != -1)
         return this->cache[city][mask];
 
     // for each city find all permutations and define the index of the last city
-    for (int nextCity = 0; nextCity < this->cities; nextCity++) {
+    for (int nextCity = 0; nextCity < this->numberOfCities; nextCity++) {
         // continue if processing the proper city
         if (isProcessingProperCity(nextCity, mask)) {
             // calculate the distance recursively
@@ -100,14 +68,14 @@ bool DynamicProgramming::isProcessingProperCity(int city, int mask) {
 
 void DynamicProgramming::collectPaths() {
     // set city as firstCity
-    int city = this->firstCity;
+    int city = 0;
 
     // and calculate it's binary mask
     int mask = 1 << city;
 
-    for(int i = 0; i < cities; i++) {
+    for(int i = 0; i < numberOfCities; i++) {
         // add the city to the path vector
-        path.push_back(city);
+        this->path.push_back(city);
 
         // select the next city
         city = lastCities[city][mask];
@@ -123,4 +91,34 @@ void DynamicProgramming::collectPaths() {
 
 int DynamicProgramming::calcNextMask(int city, int oldMask) {
     return oldMask | (1 << city);
+}
+
+void DynamicProgramming::allocateMemory() {
+    // this->cities possible cities that could have been visited as the last ones and
+    // 2^this->cities (1 << this -> cities) possible subsets of visited cities
+    this->cache = new int*[this->numberOfCities];
+
+    for(int i = 0; i < this->numberOfCities; i++) {
+        this->cache[i] = new int[1 << this->numberOfCities];
+    }
+
+    this->lastCities = new int*[this->numberOfCities];
+
+    for(int i = 0; i < this->numberOfCities; i++) {
+        this->lastCities[i] = new int[1 << this->numberOfCities];
+    }
+}
+
+void DynamicProgramming::fillArrays() {
+    for(int i = 0; i < this->numberOfCities; i++) {
+        for(int j = 0; j < 1 << this->numberOfCities; j++) {
+            this->cache[i][j] = -1;
+        }
+    }
+
+    for(int i = 0; i < this->numberOfCities; i++) {
+        for(int j = 0; j < 1 << this->numberOfCities; j++) {
+            this->lastCities[i][j] = -1;
+        }
+    }
 }

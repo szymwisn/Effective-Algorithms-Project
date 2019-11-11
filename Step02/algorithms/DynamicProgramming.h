@@ -11,22 +11,21 @@ using namespace std;
 class DynamicProgramming {
 private:
     vector<vector<Details>> instance;
-    int cities;
-    int firstCity;
+    int numberOfCities;
     int** cache;
     int** lastCities;
     vector<int> path;
 
-    void allocateMemory();
-    void fillArrays();
     void execute();
     int execute(int city, int mask);
     bool isProcessingProperCity(int city, int mask);
     void collectPaths();
     int calcNextMask(int city, int oldMask);
+    void allocateMemory();
+    void fillArrays();
 
 public:
-    explicit DynamicProgramming(int firstCity, Matrix matrix);
+    explicit DynamicProgramming(Matrix matrix);
 
     vector<int> findPath();
 };

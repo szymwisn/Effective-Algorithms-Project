@@ -13,7 +13,6 @@ private:
     Matrix matrix;
     vector<int> cities;
     int numberOfCities;
-    int firstCity;
     vector<vector<int>> permutations;
 
     vector<int> getAllCities();
@@ -21,7 +20,7 @@ private:
     int factorial(int n);
 
 public:
-    explicit BruteForce(int firstCity, Matrix matrix);
+    explicit BruteForce(Matrix matrix);
 
     vector<int> findPath();
 };

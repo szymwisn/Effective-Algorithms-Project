@@ -59,22 +59,6 @@ void Matrix::generate(int numberOfCities) {
     this->instance = instance;
 }
 
-int Matrix::calculateCostValue() {
-    int cost = 0;
-
-    for(int i = 0; i < this->numberOfCities; i++) {
-        for(int j = 0; j < this->numberOfCities; j++) {
-            if(j == i + 1) {
-                cost += this->instance[i][j].distance;
-            }
-        }
-    }
-
-    cost += this->instance[this->numberOfCities-1][0].distance;
-
-    return cost;
-}
-
 int Matrix::calculateCostValue(vector<int> cities) {
     int cost = 0;
 
