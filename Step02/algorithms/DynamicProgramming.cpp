@@ -1,6 +1,6 @@
-#include "Dynamic_programming.h"
+#include "DynamicProgramming.h"
 
-Dynamic_programming::Dynamic_programming(int firstCity, Matrix matrix) {
+DynamicProgramming::DynamicProgramming(int firstCity, Matrix matrix) {
     this->firstCity = firstCity;
     this->instance = matrix.getInstance();
     this->cities = (int) this->instance.size();
@@ -13,7 +13,7 @@ Dynamic_programming::Dynamic_programming(int firstCity, Matrix matrix) {
 
 }
 
-void Dynamic_programming::allocateMemory() {
+void DynamicProgramming::allocateMemory() {
     // this->cities possible cities that could have been visited as the last ones and
     // 2^this->cities (1 << this -> cities) possible subsets of visited cities
     cache = new int*[this->cities];
@@ -29,7 +29,7 @@ void Dynamic_programming::allocateMemory() {
     }
 }
 
-void Dynamic_programming::fillArrays() {
+void DynamicProgramming::fillArrays() {
     for(int i = 0; i < this->cities; i++) {
         for(int j = 0; j < 1 << this->cities; j++) {
             this->cache[i][j] = -1;
@@ -43,13 +43,13 @@ void Dynamic_programming::fillArrays() {
     }
 }
 
-vector<int> Dynamic_programming::findPath() {
+vector<int> DynamicProgramming::findPath() {
     execute();
     collectPaths();
     return this->path;
 }
 
-void Dynamic_programming::execute() {
+void DynamicProgramming::execute() {
     // set city as firstCity
     int city = this->firstCity;
 
@@ -60,7 +60,7 @@ void Dynamic_programming::execute() {
     execute(city, mask);
 }
 
-int Dynamic_programming::execute(int city, int mask) {
+int DynamicProgramming::execute(int city, int mask) {
     int const VISITED_ALL_MASK = (1 << this->cities) - 1;
     int minDistance = INT_MAX;
     int lastCity = -1;
@@ -94,11 +94,11 @@ int Dynamic_programming::execute(int city, int mask) {
     return minDistance;
 }
 
-bool Dynamic_programming::isProcessingProperCity(int city, int mask) const {
+bool DynamicProgramming::isProcessingProperCity(int city, int mask) {
     return (mask & (1 << city)) == 0;
 }
 
-void Dynamic_programming::collectPaths() {
+void DynamicProgramming::collectPaths() {
     // set city as firstCity
     int city = this->firstCity;
 
@@ -121,6 +121,6 @@ void Dynamic_programming::collectPaths() {
     }
 }
 
-int Dynamic_programming::calcNextMask(int city, int oldMask) {
+int DynamicProgramming::calcNextMask(int city, int oldMask) {
     return oldMask | (1 << city);
 }

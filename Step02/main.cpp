@@ -1,43 +1,47 @@
 #include "utils/file manager/FileManager.h"
-#include "algorithms/Dynamic_programming.h"
+#include "algorithms/DynamicProgramming.h"
+#include "algorithms/BruteForce.h"
 #include <iostream>
+
+void showMenu();
+void printPath(Matrix &matrix, const vector<int> &path);
 
 using namespace std;
 
 
 int main() {
-    static Matrix matrix;
-    static char option;
-    static string fileName;
-    static int numberOfCities;
-    static int distance;
+    Matrix matrix;
+    char option;
 
     cout << "--=== Traveling Salesman Problem ===--" << endl;
 
     do {
-        cout << "1 - Load Matrix From File" << endl;
-        cout << "2 - Generate Random Matrix" << endl;
-        cout << "3 - Create Matrix Manually" << endl;
-        cout << "4 - TSP - dynamic programming" << endl;
-        cout << "q - Exit" << endl;
-        cout << "Enter Key >> ";
+        showMenu();
         cin >> option;
 
         switch (option) {
-            case '1':
+            case '1': {
+                string fileName;
+
                 cout << "Enter file name >>";
                 cin >> fileName;
                 matrix.clear();
                 matrix = FileManager::loadFromFile(fileName);
                 matrix.display();
                 break;
-            case '2':
+            }
+            case '2': {
+                int numberOfCities;
+
                 cout << "Enter number of cities >>";
                 cin >> numberOfCities;
                 matrix.generate(numberOfCities);
                 matrix.display();
                 break;
+            }
             case '3': {
+                int distance;
+                int numberOfCities;
                 vector<vector<Details>> instance;
 
                 cout << "Enter number of cities >>";
@@ -66,16 +70,18 @@ int main() {
                 break;
             }
             case '4': {
-                Dynamic_programming dp(1, matrix);
+                BruteForce bf(0, matrix);
+                vector<int> path = bf.findPath();
+
+                printPath(matrix, path);
+
+                break;
+            }
+            case '5': {
+                DynamicProgramming dp(0, matrix);
                 vector<int> path = dp.findPath();
 
-                cout << "Cost Function Value of cities in order\n[";
-                for(int i = 0; i < path.size(); i++) {
-                    cout << path[i] << " -> ";
-                }
-
-                cout << path[0] << "]\nis: ";
-                cout << matrix.calculateCostValue(path) << endl;
+                printPath(matrix, path);
 
                 break;
             }
@@ -90,4 +96,24 @@ int main() {
     } while (option != 'q');
 
     return 0;
+}
+
+void showMenu() {
+    cout << "1 - Load Matrix From File" << endl;
+    cout << "2 - Generate Random Matrix" << endl;
+    cout << "3 - Create Matrix Manually" << endl;
+    cout << "4 - TSP - brute force" << endl;
+    cout << "5 - TSP - dynamic programming" << endl;
+    cout << "q - Exit" << endl;
+    cout << "Enter Key >> ";
+}
+
+void printPath(Matrix &matrix, const vector<int> &path) {
+    cout << "Cost Function Value of cities in order\n[";
+    for(int city : path) {
+        cout << city << " -> ";
+    }
+
+    cout << path[0] << "]\nis: ";
+    cout << matrix.calculateCostValue(path) << endl;
 }
