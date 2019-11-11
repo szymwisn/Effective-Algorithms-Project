@@ -9,3 +9,6 @@ Implementations of Traveling Salesman Problem including Brute Force, Dynamic Pro
 * generating a random problem instance
 * providing the problem instance manually
 * calculation of cost function (route length from a city to itself)
+
+#### Step02
+* implemented recursive dynamic programming algorithm
