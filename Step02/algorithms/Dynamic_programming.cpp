@@ -61,11 +61,12 @@ void Dynamic_programming::execute() {
 }
 
 int Dynamic_programming::execute(int city, int mask) {
+    int const VISITED_ALL_MASK = (1 << this->cities) - 1;
     int minDistance = INT_MAX;
     int lastCity = -1;
 
     // if each city has already been visited - go back to the first city
-    if (mask == (1 << this->cities) - 1)
+    if (mask == VISITED_ALL_MASK)
         return this->instance[city][this->firstCity].distance;
 
     // if distance already in cache - return it's value
@@ -73,19 +74,16 @@ int Dynamic_programming::execute(int city, int mask) {
         return this->cache[city][mask];
 
     // for each city find all permutations and define the index of the last city
-    for (int i = 0; i < this->cities; i++) {
+    for (int nextCity = 0; nextCity < this->cities; nextCity++) {
         // continue if processing the proper city
-        if ((mask & (1 << i)) == 0) {
-            // set the new mask
-            int nextMask = calcNextMask(i, mask);
-
-            // calculate the distance for the permutation recursively
-            int distance = this->instance[city][i].distance + execute(i, nextMask);
+        if (isProcessingProperCity(nextCity, mask)) {
+            // calculate the distance recursively
+            int distance = this->instance[city][nextCity].distance + execute(nextCity, calcNextMask(nextCity, mask));
 
             // if a new minDistance found then set the city as the last one
             if (distance < minDistance) {
                 minDistance = distance;
-                lastCity = i;
+                lastCity = nextCity;
             }
         }
     }
@@ -94,6 +92,10 @@ int Dynamic_programming::execute(int city, int mask) {
     this->cache[city][mask] = minDistance;
 
     return minDistance;
+}
+
+bool Dynamic_programming::isProcessingProperCity(int city, int mask) const {
+    return (mask & (1 << city)) == 0;
 }
 
 void Dynamic_programming::collectPaths() {

@@ -21,6 +21,7 @@ private:
     void fillArrays();
     void execute();
     int execute(int city, int mask);
+    bool isProcessingProperCity(int city, int mask) const;
     void collectPaths();
     int calcNextMask(int city, int oldMask);
 
