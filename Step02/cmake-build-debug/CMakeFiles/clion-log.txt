@@ -1,0 +1,4 @@
+/home/szymon/IntelliJ/clion-2018.3.4/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/szymon/Git/Effective-Algorithms-Project/Step02
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/szymon/Git/Effective-Algorithms-Project/Step02/cmake-build-debug
