@@ -15,6 +15,7 @@ private:
     vector<vector<Details>> instance;
     int numberOfCities;
 
+    void clear();
 public:
     explicit Matrix();
     explicit Matrix(int numberOfCities);
@@ -26,7 +27,6 @@ public:
     void display();
     void generate(int numberOfCities);
     int calculateCostValue(vector<int>);
-    void clear();
 };
 
 

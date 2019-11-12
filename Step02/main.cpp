@@ -2,18 +2,21 @@
 #include "algorithms/DynamicProgramming.h"
 #include "algorithms/BruteForce.h"
 #include <iostream>
+#include <chrono>
 
 void showMenu();
-void printPathDetails(Matrix &matrix, const vector<int> &path);
+void printPathDetails(Matrix &matrix, const vector<int> &path, long long time);
 
 using namespace std;
 
 
 int main() {
-    Matrix matrix;
-    char option;
+    static const int n = 100;
+    static Matrix matrix;
+    static char option;
 
     cout << "--=== Traveling Salesman Problem ===--" << endl;
+    cout << "[ Measurements will be repeated " << n << " times ]"  << endl;
 
     do {
         showMenu();
@@ -25,7 +28,7 @@ int main() {
 
                 cout << "Enter file name >>";
                 cin >> fileName;
-                matrix.clear();
+
                 matrix = FileManager::loadFromFile(fileName);
                 matrix.display();
                 break;
@@ -35,6 +38,7 @@ int main() {
 
                 cout << "Enter number of cities >>";
                 cin >> numberOfCities;
+
                 matrix.generate(numberOfCities);
                 matrix.display();
                 break;
@@ -64,25 +68,39 @@ int main() {
                     }
                 }
 
-                matrix.clear();
                 matrix.setInstance(instance);
                 matrix.display();
                 break;
             }
             case '4': {
-                BruteForce bf(matrix);
-                vector<int> path = bf.findPath();
+                vector<int> path;
+                long long timeSum = 0;
 
-                printPathDetails(matrix, path);
+                for(int i = 0; i < n; i++) {
+                    BruteForce bf(matrix);
+                    auto start = chrono::steady_clock::now();
+                    path = bf.findPath();
+                    auto end = chrono::steady_clock::now();
+                    timeSum += chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+                }
+
+                printPathDetails(matrix, path, timeSum / n);
 
                 break;
             }
             case '5': {
-                DynamicProgramming dp(matrix);
-                vector<int> path = dp.findPath();
+                vector<int> path;
+                long long timeSum = 0;
 
-                printPathDetails(matrix, path);
+                for(int i = 0; i < n; i++) {
+                    DynamicProgramming dp(matrix);
+                    auto start = chrono::steady_clock::now();
+                    path = dp.findPath();
+                    auto end = chrono::steady_clock::now();
+                    timeSum += chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+                }
 
+                printPathDetails(matrix, path, timeSum / n);
                 break;
             }
             case 'q':
@@ -99,6 +117,7 @@ int main() {
 }
 
 void showMenu() {
+    cout << endl;
     cout << "1 - Load Matrix From File" << endl;
     cout << "2 - Generate Random Matrix" << endl;
     cout << "3 - Create Matrix Manually" << endl;
@@ -108,12 +127,16 @@ void showMenu() {
     cout << "Enter Key >> ";
 }
 
-void printPathDetails(Matrix &matrix, const vector<int> &path) {
-    cout << "Cost Function Value of cities in order\n[";
+void printPathDetails(Matrix &matrix, const vector<int> &path, long long time) {
+    cout << "Cost Value: ";
+    cout << matrix.calculateCostValue(path) << endl;
+
+    cout << "Path: [";
     for(int city : path) {
         cout << city << " -> ";
     }
 
-    cout << path[0] << "]\nis: ";
-    cout << matrix.calculateCostValue(path) << endl;
+    cout << path[0] << "]\n";
+
+    cout << "Average time [ns]: " << time  << endl;
 }
