@@ -18,7 +18,7 @@ private:
 
     void execute();
     int execute(int city, int mask);
-    bool isProcessingProperCity(int city, int mask);
+    bool hasNextCity(int city, int mask);
     void collectPaths();
     int calcNextMask(int city, int oldMask);
     void allocateMemory();
