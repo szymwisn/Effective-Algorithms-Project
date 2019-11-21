@@ -41,10 +41,9 @@ int DynamicProgramming::execute(int city, int mask) {
     if (this->cache[city][mask] != -1)
         return this->cache[city][mask];
 
-    // for each city find all permutations and define the index of the last city in the path
     for (int nextCity = 0; nextCity < this->numberOfCities; nextCity++) {
-        // continue if processing the proper city
-        if (hasNextCity(nextCity, mask)) {
+        // continue if city hasn't been visited yet
+        if (!hasTheCityBeenVisited(nextCity, mask)) {
             // calculate the distance recursively
             int distance = this->instance[city][nextCity].distance + execute(nextCity, calcNextMask(nextCity, mask));
 
@@ -62,8 +61,8 @@ int DynamicProgramming::execute(int city, int mask) {
     return minDistance;
 }
 
-bool DynamicProgramming::hasNextCity(int city, int mask) {
-    return (mask & (1 << city)) == 0;
+bool DynamicProgramming::hasTheCityBeenVisited(int city, int mask) {
+    return (mask & (1 << city)) != 0;
 }
 
 void DynamicProgramming::collectPaths() {
