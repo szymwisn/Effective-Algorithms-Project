@@ -11,7 +11,7 @@ using namespace std;
 
 
 int main() {
-    static const int n = 10;
+    static const int n = 1;
     static Matrix matrix;
     static char option;
 
