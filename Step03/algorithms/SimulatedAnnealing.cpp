@@ -22,7 +22,6 @@ vector<int> SimulatedAnnealing::findPath() {
             if(costDifference < 0 ||
                exp(-costDifference / temperature) > ((double) rand() / (RAND_MAX)) + 1) {
                 bestPath = adjacentPath;
-                break;
             }
         }
 
