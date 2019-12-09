@@ -1,6 +1,7 @@
 #include "utils/file manager/FileManager.h"
 #include "algorithms/DynamicProgramming.h"
 #include "algorithms/BruteForce.h"
+#include "algorithms/SimulatedAnnealing.h"
 #include <iostream>
 #include <chrono>
 
@@ -103,6 +104,21 @@ int main() {
                 printPathDetails(matrix, path, timeSum / n);
                 break;
             }
+            case '6': {
+                vector<int> path;
+                long long timeSum = 0;
+
+                for(int i = 0; i < n; i++) {
+                    SimulatedAnnealing sa(matrix);
+                    auto start = chrono::steady_clock::now();
+                    path = sa.findPath();
+                    auto end = chrono::steady_clock::now();
+                    timeSum += chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+                }
+
+                printPathDetails(matrix, path, timeSum / n);
+                break;
+            }
             case 'q':
                 cout << "--=== Application Closed ===--" << endl;
                 break;
@@ -123,6 +139,7 @@ void showMenu() {
     cout << "3 - Create Matrix Manually" << endl;
     cout << "4 - TSP - brute force" << endl;
     cout << "5 - TSP - dynamic programming" << endl;
+    cout << "6 - TSP - simulated annealing" << endl;
     cout << "q - Exit" << endl;
     cout << "Enter Key >> ";
 }
