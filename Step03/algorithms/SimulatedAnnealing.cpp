@@ -20,7 +20,7 @@ vector<int> SimulatedAnnealing::findPath() {
             int costDifference = adjacentCost - bestCost;
 
             if(costDifference < 0 ||
-               exp(-costDifference / temperature) > ((double) rand() / (RAND_MAX)) + 1) {
+               exp(-costDifference / temperature) > (double) rand() / (RAND_MAX)) {
                 bestPath = adjacentPath;
             }
         }
@@ -52,7 +52,6 @@ vector<int> SimulatedAnnealing::findRandomPermutation() {
 }
 
 vector<int> SimulatedAnnealing::findAdjacentPermutation(vector<int> permutation) {
-    vector<int> newPermutation = permutation;
     int indexA, indexB;
 
     indexA = rand() % this->numberOfCities;
@@ -61,10 +60,11 @@ vector<int> SimulatedAnnealing::findAdjacentPermutation(vector<int> permutation)
         indexB = rand() % this->numberOfCities;
     } while (indexB == indexA);
 
-    newPermutation[indexA] = permutation[indexB];
-    newPermutation[indexB] = permutation[indexA];
+    int temp = permutation[indexA];
+    permutation[indexA] = permutation[indexB];
+    permutation[indexB] = temp;
 
-    return newPermutation;
+    return permutation;
 }
 
 int SimulatedAnnealing::calculateCost(vector<int> permutation) {

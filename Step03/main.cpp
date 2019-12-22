@@ -12,7 +12,7 @@ using namespace std;
 
 
 int main() {
-    static const int n = 1;
+    static const int n = 10;
     static Matrix matrix;
     static char option;
 
@@ -107,6 +107,7 @@ int main() {
             case '6': {
                 vector<int> path;
                 long long timeSum = 0;
+                double averageCost = 0;
 
                 for(int i = 0; i < n; i++) {
                     SimulatedAnnealing sa(matrix);
@@ -114,9 +115,16 @@ int main() {
                     path = sa.findPath();
                     auto end = chrono::steady_clock::now();
                     timeSum += chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+
+                    averageCost += matrix.calculateCostValue(path);
                 }
 
+                averageCost /= n;
+
+                cout << "Last found path: " << endl;
                 printPathDetails(matrix, path, timeSum / n);
+
+                cout << "\nAverage path cost: " << averageCost << " (" << n << " measures)" << endl;
                 break;
             }
             case 'q':
