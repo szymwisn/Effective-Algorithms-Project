@@ -3,6 +3,8 @@
 #include "algorithms/BruteForce.h"
 #include "algorithms/SimulatedAnnealing.h"
 #include "algorithms/AntColony.h"
+#include "algorithms/Genetic.h"
+
 #include <iostream>
 #include <chrono>
 
@@ -13,7 +15,7 @@ using namespace std;
 
 
 int main() {
-    static const int n = 10;
+    static const int n = 1;
     static Matrix matrix;
     static char option;
 
@@ -51,6 +53,7 @@ int main() {
                 vector<vector<Details>> instance;
 
                 cout << "Enter number of cities >>";
+
                 cin >> numberOfCities;
 
                 instance.resize((unsigned long long int) numberOfCities);
@@ -149,6 +152,21 @@ int main() {
                 printPathDetails(matrix, path, timeSum / n);
 
                 cout << "\nAverage path cost: " << averageCost << " (" << n << " measures)" << endl;
+//                    Genetic g(matrix, 150, 5, 0.01, 500);
+//                    auto start = chrono::steady_clock::now();
+//                    path = g.findPath();
+//                    auto end = chrono::steady_clock::now();
+//                    timeSum += chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+//
+////                    averageCost += matrix.calculateCostValue(path);
+//                }
+//
+////                averageCost /= n;
+////
+////                cout << "Last found path: " << endl;
+////                printPathDetails(matrix, path, timeSum / n);
+////
+////                cout << "\nAverage path cost: " << averageCost << " (" << n << " measures)" << endl;
                 break;
             }
             case 'q':
@@ -173,6 +191,7 @@ void showMenu() {
     cout << "5 - TSP - dynamic programming" << endl;
     cout << "6 - TSP - simulated annealing" << endl;
     cout << "7 - TSP - ant colony" << endl;
+    cout << "8 - TSP - genetic algorithm" << endl;
     cout << "q - Exit" << endl;
     cout << "Enter Key >> ";
 }
