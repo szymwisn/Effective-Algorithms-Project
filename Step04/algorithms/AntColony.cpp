@@ -10,65 +10,87 @@ AntColony::AntColony(Matrix matrix, int iterations, double ro, double alpha, dou
 }
 
 vector<int> AntColony::findPath() {
-    vector<vector<int>> paths((unsigned long) this->numberOfCities);
+    vector<vector<int>> antPaths((unsigned long) this->numberOfCities);
     vector<vector<double>> pheromones((unsigned long) this->numberOfCities);
 
+    // resize vectors
     for(int i = 0; i < numberOfCities; i++) {
-        paths[i].resize((unsigned long) numberOfCities, -1);
+        antPaths[i].resize((unsigned long) numberOfCities, -1);
         pheromones[i].resize((unsigned long) numberOfCities);
     }
 
+    // set initial pheromones values
     for(int i = 0; i < this->numberOfCities; i++) {
         for (int j = 0; j < this->numberOfCities; j++) {
             pheromones[i][j] = (double) rand() / RAND_MAX * this->numberOfCities / this->instance[0][1].distance;
         }
     }
 
+    // in each iteration find paths for each ant and evaporate pheromones at the end
     for(int i = 0; i < this->iterations; i++) {
+        // iterate over each city
         for(int j = 0; j < this->numberOfCities; j++) {
-            for (int &city : paths[j]) {
+            // create new Ant for each city
+            Ant *ant = new Ant(j, this->numberOfCities);
+
+            // at first the ant has no cities on it's route
+            for (int &city : antPaths[j]) {
                 city = -1;
             }
 
-            Ant *ant = new Ant(j, this->numberOfCities);
-            defineAntRoutes(ant, paths, pheromones);
+            // and find it's routes
+            definePathsForAnt(ant, antPaths, pheromones);
         }
+        // at the end of each iteration evaporate pheromones
+        evaporatePheromones(antPaths, pheromones);
     }
 
-    evaporatePheromones(pheromones, paths);
-
-    return defineBestPath(paths);
+    // return best path found
+    return defineBestPath(antPaths);
 }
 
-void AntColony::defineAntRoutes(Ant *ant, vector<vector<int>> &routes, vector<vector<double>> &pheromones) {
-    vector<double> probabilities;
+void AntColony::definePathsForAnt(Ant *ant, vector<vector<int>> &paths, vector<vector<double>> &pheromones) {
+    vector<double> choiceProbabilities;
 
-    routes[ant->n][0] = ant->n;
+    // ant starts in the city of the same number
+    paths[ant->n][0] = ant->n;
+
+    // mark this city as visited
     ant->visited[ant->n] = true;
 
+    // iterate over each city
     for (int i = 0; i < this->numberOfCities - 1; i++) {
-        int city = routes[ant->n][i];
+        // first city
+        int city = paths[ant->n][i];
 
-        probabilities.clear();
-        probabilities.resize((unsigned long) this->numberOfCities, 0.0);
+        // clear probabilities
+        choiceProbabilities.clear();
+        choiceProbabilities.resize((unsigned long) this->numberOfCities, 0.0);
 
+        // define probabilities of visiting next cities
         for (int secondCity = 0; secondCity < this->numberOfCities; secondCity++) {
+            // if the city wasn't visited and isn't the same as the first city then calculate the probability of visiting the city
             if (city != secondCity && !ant->visited[secondCity]) {
-                probabilities[secondCity] = calcPhiValue(city, secondCity, ant, pheromones);
+                choiceProbabilities[secondCity] = calcProbability(city, secondCity, ant, pheromones);
             }
         }
 
-        routes[ant->n][i + 1] = getNextCity(probabilities);
-        ant->visited[routes[ant->n][i + 1]] = true;
+        // get the next city based on probabilities
+        paths[ant->n][i + 1] = getNextCity(choiceProbabilities);
+
+        // mark the city as visited
+        ant->visited[paths[ant->n][i + 1]] = true;
     }
 }
 
-double AntColony::calcPhiValue(int firstCity, int secondCity, Ant *ant, vector<vector<double>> &pheromones) {
+// calculate probability of going to the next city based on pheromones using provided equations
+double AntColony::calcProbability(int firstCity, int secondCity, Ant *ant, vector<vector<double>> &pheromones) {
     double tau_ij = pow(pheromones[firstCity][secondCity], this->alpha);
     double eta_ij = pow(1.0 / this->instance[firstCity][secondCity].distance, this->beta);
 
     double sum = 0;
     for (int city = 0; city < this->numberOfCities; city++) {
+        // if the city wasn't visited and isn't the same as the first city then calculate the probability of visiting the city
         if(city != firstCity && !ant->visited[city]) {
             double tau_ic = pow(pheromones[firstCity][city], this->alpha);
             double eta_ic = pow(1.0 / this->instance[firstCity][city].distance, this->beta);
@@ -92,16 +114,18 @@ int AntColony::getNextCity(vector<double> &probabilities) {
     return city;
 }
 
-void AntColony::evaporatePheromones(vector<vector<double>> &pheromones, vector<vector<int>> &routes) {
-    for(int i = 0; i < routes.size(); i++) {
-        int route_i = calculateCost(routes[i]);
+void AntColony::evaporatePheromones(vector<vector<int>> &paths, vector<vector<double>> &pheromones) {
+    // iterate over paths
+    for(int i = 0; i < paths.size(); i++) {
+        int pathCost = calculateCost(paths[i]);
 
-        for(int j = 0; j < routes.size() - 1; j++) {
-            int city = routes[i][j];
-            int nextCity = routes[i][j + 1];
+        // iterate over each path
+        for(int j = 0; j < paths.size() - 1; j++) {
+            int city = paths[i][j];
+            int nextCity = paths[i][j + 1];
 
-            pheromones[city][nextCity] = (1 - this->ro) * pheromones[city][nextCity] + this->numberOfCities / (double) route_i;
-            pheromones[nextCity][city] = (1 - this->ro) * pheromones[nextCity][city] + this->numberOfCities / (double) route_i;
+            pheromones[city][nextCity] = (1 - this->ro) * pheromones[city][nextCity] + this->numberOfCities / (double) pathCost;
+            pheromones[nextCity][city] = (1 - this->ro) * pheromones[nextCity][city] + this->numberOfCities / (double) pathCost;
         }
     }
 }

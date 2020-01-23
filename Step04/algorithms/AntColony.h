@@ -31,10 +31,10 @@ private:
     int iterations;
     double ro, alpha, beta;
 
-    void defineAntRoutes(Ant *ant, vector<vector<int>> &routes, vector<vector<double>> &pheromones);
-    double calcPhiValue(int firstCity, int secondCity, Ant *ant, vector<vector<double>> &pheromones);
+    void definePathsForAnt(Ant *ant, vector<vector<int>> &paths, vector<vector<double>> &pheromones);
+    double calcProbability(int firstCity, int secondCity, Ant *ant, vector<vector<double>> &pheromones);
     int getNextCity (vector<double> &probabilities);
-    void evaporatePheromones(vector<vector<double>> &pheromones, vector<vector<int>> &routes);
+    void evaporatePheromones(vector<vector<int>> &paths, vector<vector<double>> &pheromones);
     vector<int> defineBestPath(const vector<vector<int>> &paths);
     int calculateCost(vector<int> path);
 
