@@ -137,7 +137,7 @@ int main() {
                 double averageCost = 0;
 
                 for(int i = 0; i < n; i++) {
-                    AntColony ac(matrix, 100, 0.9, 1.1, 4.5);
+                    AntColony ac(matrix, 100, 0.5, 1, 4.5);
                     auto start = chrono::steady_clock::now();
                     path = ac.findPath();
                     auto end = chrono::steady_clock::now();
@@ -167,6 +167,29 @@ int main() {
 ////                printPathDetails(matrix, path, timeSum / n);
 ////
 ////                cout << "\nAverage path cost: " << averageCost << " (" << n << " measures)" << endl;
+                break;
+            }
+            case '8': {
+                vector<int> path;
+                long long timeSum = 0;
+                double averageCost = 0;
+
+                for(int i = 0; i < n; i++) {
+                    Genetic g(matrix, 150, 5, 0.01, 500);
+                    auto start = chrono::steady_clock::now();
+                    path = g.findPath();
+                    auto end = chrono::steady_clock::now();
+                    timeSum += chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+
+//                    averageCost += matrix.calculateCostValue(path);
+                }
+
+//                averageCost /= n;
+//
+//                cout << "Last found path: " << endl;
+//                printPathDetails(matrix, path, timeSum / n);
+//
+//                cout << "\nAverage path cost: " << averageCost << " (" << n << " measures)" << endl;
                 break;
             }
             case 'q':

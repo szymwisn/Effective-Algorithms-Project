@@ -60,12 +60,12 @@ void AntColony::definePathsForAnt(Ant *ant, vector<vector<int>> &paths, vector<v
 
     // iterate over each city
     for (int i = 0; i < this->numberOfCities - 1; i++) {
-        // first city
-        int city = paths[ant->n][i];
-
         // clear probabilities
         choiceProbabilities.clear();
         choiceProbabilities.resize((unsigned long) this->numberOfCities, 0.0);
+
+        // get the number of the first city
+        int city = paths[ant->n][i];
 
         // define probabilities of visiting next cities
         for (int secondCity = 0; secondCity < this->numberOfCities; secondCity++) {

@@ -10,22 +10,20 @@ Genetic::Genetic(Matrix matrix, int populationSize, int eliteSize, float mutatio
     this->citiesList = this->getAllCities();
 }
 
-bool sortByFitness(const pair<vector<int>, float> &a, const pair<vector<int>, float> &b) {
-    return (a.second > b.second);
-}
-
 vector<int> Genetic::findPath() {
-    vector<vector<int>> nextPopulation;
+    int bestCost = INT32_MAX;
+    vector<vector<int>> nextPopulation((unsigned long long) this->populationSize);
+
+    for(int i = 0; i < nextPopulation.size(); i++) {
+        nextPopulation.resize((unsigned long long) this->numberOfCities);
+    }
 
     // find the initial population
     this->population = this->randomizePopulation();
 
-//    for(int i = 0; i < this->generations; i++) {
-//        while(nextPopulation.size() < this->population.size()) {
-            // assign fitness to chromosomes
-            rankChromosomes();
-
-            // select two parents
+    for(int i = 0; i < this->generations; i++) {
+        while(nextPopulation.size() < this->population.size()) {
+            // select two best parents parents
             pair<vector<int>, vector<int>> parents = select();
 
             // add values to mating pool
@@ -35,46 +33,21 @@ vector<int> Genetic::findPath() {
             vector<int> mutatedChild = mutate(child);
 
             nextPopulation.push_back(mutatedChild);
-//        }
-
-//        this->population = nextPopulation;
-//    }
-
-
-
-
-    // sort chromosomes by fitness value - from best to worst
-//    sort(chromosomeWithFitness.begin(), chromosomeWithFitness.end(), sortByFitness);
-
-    // create a child element from two best parents
-//    pair<vector<int>, vector<int>> parents = make_pair(chromosomeWithFitness[0].first, chromosomeWithFitness[1].first);
-
-
-    for(const auto& pair : chromosomeWithFitness) {
-        for( const auto& gene : pair.first) {
-            cout << gene << " ";
         }
-        cout << ", fitness: " << pair.second << endl;
+
+        this->population = nextPopulation;
+
+        for(const auto& path : this->population) {
+            int cost = calculateCost(path);
+
+            if(cost < bestCost) {
+                bestCost = cost;
+                this->bestPath = path;
+            }
+        }
     }
 
-
-// TODO test
-
-//    map<vector<int>, float> chromosomeWithFitnessMap;
-//
-//    for(int i = 0; i < this->populationSize; i++) {
-//        float fitness = calculateFitness(this->population[i]);
-//        chromosomeWithFitnessMap[this->population[i]] = fitness;
-//    }
-//
-//    for(int i = 0; i < chromosomeWithFitnessMap.size(); i++) {
-//        for(const auto& gene : this->population[i]) {
-//            cout << gene << " ";
-//        }
-//        cout << ", fitness: " << chromosomeWithFitnessMap[this->population[i]] << endl;
-//    }
-
-    return vector<int>(1, 1);
+    return this->bestPath;
 }
 
 vector<int> Genetic::getAllCities() {
@@ -89,21 +62,26 @@ vector<int> Genetic::getAllCities() {
 }
 
 vector<vector<int>> Genetic::randomizePopulation() {
-    vector<vector<int>> p;
-    p.resize((unsigned long) this->populationSize);
+    vector<vector<int>> pop;
+    pop.resize((unsigned long) this->populationSize);
 
     int k = 0;
     do {
-        p[k] = this->citiesList;
+        pop[k] = this->citiesList;
         k++;
     } while (next_permutation(this->citiesList.begin(), this->citiesList.end()) && k < this->populationSize);
 
-    return p;
+    return pop;
 }
 
-void Genetic::rankChromosomes() {
-    float totalFitness= 0;// calculate fitness of each chromosome from the calculated population
+bool sortByFitness(const pair<vector<int>, float> &a, const pair<vector<int>, float> &b) {
+    return (a.second > b.second);
+}
 
+pair<vector<int>, vector<int>> Genetic::select() {
+    float totalFitness= 0;
+
+    // calculate fitness of each chromosome from the calculated population
     for(const auto& chromosome : this->population) {
         float fitness = this->calculateFitness(chromosome);
         totalFitness += fitness;
@@ -112,19 +90,8 @@ void Genetic::rankChromosomes() {
 
     sort(chromosomeWithFitness.begin(), chromosomeWithFitness.end(), sortByFitness);
 
-//    for(const auto& pair : chromosomeWithFitness) {
-//        for( const auto& gene : pair.first) {
-//            cout << gene << " ";
-//        }
-//        cout << ", fitness: " << pair.second << endl;
-//    }
-
-//    cout << endl << endl;
-
-    // normalize fitness
-    for (int i = 0; i < chromosomeWithFitness.size(); i++) {
-        chromosomeWithFitness[i].second = this->normalizeFitness(chromosomeWithFitness[i].second, totalFitness);
-    }
+    pair<vector<int>, vector<int>> parents = make_pair(chromosomeWithFitness[0].first, chromosomeWithFitness[1].first);
+    return parents;
 }
 
 float Genetic::calculateFitness(vector<int> chromosome) {
@@ -139,19 +106,56 @@ float Genetic::calculateFitness(vector<int> chromosome) {
     return 1 / (float) cost;
 }
 
-float Genetic::normalizeFitness(float fitness, float totalFitness) {
-    return (fitness/totalFitness) * 100;
-}
-
-pair<vector<int>, vector<int>> Genetic::select() {
-    pair<vector<int>, vector<int>> parents = make_pair(chromosomeWithFitness[0].first, chromosomeWithFitness[1].first);
-    return parents;
-}
-
 vector<int> Genetic::crossover(pair<vector<int>, vector<int>> parents) {
-    return vector<int>();
+    int a, b;
+    vector<int> parent1 = parents.first;
+    vector<int> parent2 = parents.second;
+    vector<int> child(parent1.size());
+
+    a = rand() % this->numberOfCities;
+
+    do {
+        b = rand() % this->numberOfCities;
+    } while(a == b);
+
+    if (a > b) {
+        swap(a, b);
+    }
+
+    // TODO finish
+
+    return child;
 }
 
+// inversion
 vector<int> Genetic::mutate(vector<int> child) {
-    return vector<int>();
+    int lower, upper;
+
+    lower = rand() % this->numberOfCities;
+
+    do {
+        upper = rand() % this->numberOfCities;
+    } while (lower == upper);
+
+    if(lower > upper) {
+        swap(lower, upper);
+    }
+
+    for (int i = lower, j = upper; i < j; i++, j--) {
+        swap(child[i], child[j]);
+    }
+
+    return child;
+}
+
+int Genetic::calculateCost(vector<int> path) {
+    int cost = 0;
+
+    for(int i = 0; i < path.size() - 1; i++) {
+        cost += this->instance[path[i]][path[i + 1]].distance;
+    }
+
+    cost += this->instance[path[path.size() - 1]][path[0]].distance;
+
+    return cost;
 }

@@ -20,7 +20,7 @@ private:
 
     vector<vector<Details>> instance;
     int numberOfCities;
-    vector<int> path;
+    vector<int> bestPath;
     vector<int> citiesList;
     vector<vector<int>> population;
 
@@ -28,12 +28,11 @@ private:
 
     vector<int> getAllCities();
     vector<vector<int>> randomizePopulation();
-    void rankChromosomes();
     pair<vector<int>, vector<int>> select();
     vector<int> crossover(pair<vector<int>, vector<int>> parents);
     vector<int> mutate (vector<int> child);
     float calculateFitness(vector<int> chromosome);
-    float normalizeFitness(float fitness, float totalFitness);
+    int calculateCost(vector<int> path);
 
 public:
     explicit Genetic(Matrix matrix, int populationSize, int eliteSize, float mutationRate, int generations);
